@@ -12,11 +12,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+import model.excecoes.DomainException;
 import model.excecoes.Reservation1;
 
 public class Program {
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) {
 		// Teste1 tst = new Teste1();
 		// tst.listador();
 		/*
@@ -25,17 +26,14 @@ public class Program {
 
 		Scanner sc = new Scanner(System.in);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			System.out.println("Room number");
+			int number = sc.nextInt();
+			System.out.println("Check-in date (dd/MM/yyyy): ");
+			Date checkIn = sdf.parse(sc.next());
+			System.out.println("Check-out date (dd/MM/yyyy): ");
+			Date checkOut = sdf.parse(sc.next());
 
-		System.out.println("Room number");
-		int number = sc.nextInt();
-		System.out.println("Check-in date (dd/MM/yyyy): ");
-		Date checkIn = sdf.parse(sc.next());
-		System.out.println("Check-out date (dd/MM/yyyy): ");
-		Date checkOut = sdf.parse(sc.next());
-
-		if (!checkOut.after(checkIn)) {
-			System.out.println("Error in reservation: Check-out date must be after check-in date");
-		} else {
 			Reservation1 reservation = new Reservation1(number, checkIn, checkOut);
 			System.out.println("Reservation: " + reservation);
 
@@ -48,15 +46,18 @@ public class Program {
 			checkIn = sdf.parse(sc.next());
 			System.out.println("Enter the updated check-out date (dd/MM/yyyy): ");
 			checkOut = sdf.parse(sc.next());
-			
-			String error = reservation.updateDates(checkIn, checkOut);
-			if (error != null) {
-				System.out.println("Error in reservation: " + error);
-			}else {
-				System.out.println("Reservation: " + reservation);
-			}
-			
-		} // fim de if/else
+
+			reservation.updateDates(checkIn, checkOut);
+
+			System.out.println("Reservation: " + reservation);
+		} catch (ParseException e) {
+			System.out.println("Invalid date format\n" + e);
+		}catch (DomainException e) {
+			System.out.println("Error in reservation: " + e.getMessage());
+		}catch(RuntimeException e) {
+			System.out.println("Unexpected Error!\n" + e.getMessage());
+		}
+		//fim da tratativa de erros
 		sc.close();
 	}// fim de main
 
